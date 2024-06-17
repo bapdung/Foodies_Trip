@@ -1,0 +1,46 @@
+.card {
+  margin: 1rem;
+}
+
+.card-title {
+  margin: 2px;
+  font-weight: bold;
+  /* font-family: "Gowun Batang", serif; */
+  font-style: normal;
+}
+
+.imageincard {
+  margin: 5px 2px 2px 2px;
+  border-radius: 3px;
+  width: fit-content;
+  height: fit-content;
+  overflow: hidden;
+}
+
+.card > .imageincard > img {
+  border-radius: 3px;
+  transition: all 1.5s linear;
+}
+
+.card:hover img {
+  transform: scale(1.2);
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+}
+
+.detail_title {
+  /* font-family: "Gowun Batang", serif; */
+  font-weight: bold;
+  font-style: normal;
+  margin: 5px 5px 8px 8px;
+}
+
+.card-text {
+  /* font-family: "Gowun Batang", serif; */
+  font-weight: bold;
+  font-style: normal;
+  margin: 5px 5px 5px 2px;
+}

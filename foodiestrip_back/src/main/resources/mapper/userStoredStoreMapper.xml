@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foodiestrip.model.dao.UserStoredStoreDao">
+
+    <insert id="insertUserStoredStore" parameterType="UserStoredStoreDto">
+        INSERT INTO user_stored_store_info (user_id, content_id)
+        VALUES (#{userId}, #{contentId})
+    </insert>
+    
+    <delete id="deleteUserStoredStore" parameterType="UserStoredStoreDto">
+        DELETE FROM user_stored_store_info WHERE user_id = #{userId} And content_id = #{contentId}
+    </delete>
+    
+    <select id="selectAllUserStoredStores" parameterType="string" resultMap="userStoredStoreBasic">
+        SELECT * FROM user_stored_store_info WHERE user_id = #{userId}
+    </select>
+    
+    <select id="storedstoreCheck" parameterType="UserStoredStoreDto" resultType="int">
+    	select count(*) from user_stored_store_info where user_id = #{userId} And content_id = #{contentId}
+    </select>
+    
+    <resultMap type="UserStoredStoreDto" id="userStoredStoreBasic">
+        <id column="user_stored_store_no" property="userStoredStoreNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="content_id" property="contentId"/>
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foodiestrip.model.dao.AttractionDao">
+
+	<select id="sidoList" resultMap="sidoBasic">
+		select * from sido
+	</select>
+
+	<select id="gugunList" parameterType="integer"
+		resultMap="gugunBasic">
+		select * from gugun where sido_code = #{sidoCode}
+	</select>
+	
+	<select id="getAttraction" resultMap="attractionBasic"
+		parameterType="integer">
+		select * from attraction_info where content_id = #{contentId}
+	</select>
+
+	<select id="attractionList" parameterType="attractionDto"
+		resultMap="attractionBasic">
+
+		SELECT
+		content_id,
+		content_type_id,
+		title,
+		addr1,
+		addr2,
+		tel,
+		first_image,
+		first_image2,
+		NULL AS readcount,
+		sido_code,
+		gugun_code,
+		latitude,
+		longitude
+		FROM
+		(
+		SELECT
+		content_id,
+		content_type_id,
+		title,
+		addr1,
+		addr2,
+		tel,
+		NULL AS first_image,
+		NULL AS first_image2,
+		hit AS readcount,
+		sido_code,
+		gugun_code,
+		latitude,
+		longitude
+		FROM
+		food_info
+		WHERE
+		1=1
+		<if test="sidoCode != 0">
+			AND sido_code = #{sidoCode}
+		</if>
+		<if test="gugunCode != 0">
+			AND gugun_code = #{gugunCode}
+		</if>
+		<if test="title != null and title != ''">
+			AND title LIKE CONCAT('%', #{title}, '%')
+		</if>
+
+		UNION ALL
+
+		SELECT
+		content_id,
+		content_type_id,
+		title,
+		addr1,
+		addr2,
+		tel,
+		first_image,
+		first_image2,
+		readcount,
+		sido_code,
+		gugun_code,
+		latitude,
+		longitude
+		FROM
+		attraction_info
+		WHERE
+		1=1
+		<if test="sidoCode != 0">
+			AND sido_code = #{sidoCode}
+		</if>
+		<if test="gugunCode != 0">
+			AND gugun_code = #{gugunCode}
+		</if>
+		<if test="title != null and title != ''">
+			AND title LIKE CONCAT('%', #{title}, '%')
+		</if>
+		) AS merged_data
+		where
+			1=1
+			<if test="contentTypeId != 0 ">
+				AND content_type_id = #{contentTypeId}
+			</if>
+		limit 0, 100
+	</select>
+
+
+
+
+	<select id="select" parameterType="attractionDto"
+		resultMap="attractionBasic">
+		select *
+		from attraction_info
+		where title like concat('%',
+		#{title} ,'%')
+		and content_type_id = #{contentTypeId}
+		and sido_code =
+		#{sidoCode}
+	</select>
+
+	<select id="recommendList" resultMap="attractionBasic"
+		parameterType="int">
+		select *
+		from attraction_info
+		where sido_code =
+		#{sidoCode}
+		order by readcount desc;
+	</select>
+
+
+
+
+	<resultMap type="attractionDto" id="attractionBasic">
+		<id column="content_id" property="contentId"></id>
+		<result column="content_type_id" property="contentTypeId" />
+		<result column="title" property="title" />
+		<result column="addr1" property="addr1" />
+		<result column="addr2" property="addr2" />
+		<result column="tel" property="tel" />
+		<result column="first_image" property="firstImage" />
+		<result column="first_image2" property="firstImage2" />
+		<result column="readcount" property="readcount" />
+		<result column="sido_code" property="sidoCode" />
+		<result column="gugun_code" property="gugunCode" />
+		<result column="latitude" property="latitude" />
+		<result column="longitude" property="longitude" />
+	</resultMap>
+
+	<resultMap id="foodBasic" type="FoodDto">
+		<id property="contentId" column="content_id" />
+		<result property="contentTypeId" column="content_type_id" />
+		<result property="title" column="title" />
+		<result property="addr1" column="addr1" />
+		<result property="addr2" column="addr2" />
+		<result property="tel" column="tel" />
+		<result property="hit" column="hit" />
+		<result property="sidoCode" column="sido_code" />
+		<result property="gugunCode" column="gugun_code" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="contentTypeName" column="content_type_name" />
+	</resultMap>
+
+	<resultMap type="sidoDto" id="sidoBasic">
+		<id column="sido_code" property="sidoCode"></id>
+		<result column="sido_name" property="sidoName"></result>
+	</resultMap>
+
+	<resultMap type="gugunDto" id="gugunBasic">
+		<id column="gugun_code" property="gugunCode"></id>
+		<result column="gugun_name" property="gugunName"></result>
+		<result column="sido_code" property="sidoCode"></result>
+	</resultMap>
+</mapper>

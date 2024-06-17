@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foodiestrip.model.dao.PlanDao">
+
+	<insert id="insertPlan" parameterType="PlanDto"
+		useGeneratedKeys="true" keyProperty="planNo">
+		INSERT INTO plan_info (plan_title,
+		user_id, plan_share, sido, gugun)
+		VALUES (#{planTitle}, #{userId},
+		#{planShare}, #{sido}, #{gugun})
+	</insert>
+
+	<insert id="insertPlanDetail" parameterType="PlanDetailDto">
+		INSERT INTO
+		plan_detail (plan_no, content_id, route_day, route_no, title,
+		detail,
+		address)
+		VALUES (#{planNo}, #{contentId}, #{routeDay}, #{routeNo},
+		#{title},
+		#{detail}, #{address})
+	</insert>
+
+	<select id="selectPlanByPlanNo" parameterType="integer"
+		resultMap="planBasic">
+		SELECT * FROM plan_info WHERE plan_no = #{planNo}
+	</select>
+
+	<select id="selectPlanDetailByPlanNo" parameterType="integer"
+		resultMap="planDetailBasic">
+		SELECT * FROM plan_detail WHERE plan_no = #{planNo}
+	</select>
+	
+	 <select id="searchPlanList" parameterType="planDto" resultMap="planBasic">
+        SELECT * FROM plan_info
+        <where>
+            <if test="gugun != null and gugun != ''">
+                gugun = #{gugun}
+                <if test="sido != null and sido != ''">
+                    AND sido = #{sido}
+                </if>
+                <if test="planTitle != null and planTitle != ''">
+                    AND plan_title LIKE CONCAT('%', #{planTitle}, '%')
+                </if>
+            </if>
+            <if test="gugun == null or gugun == ''">
+                <if test="sido != null and sido != ''">
+                    sido = #{sido}
+                    <if test="planTitle != null and planTitle != ''">
+                        AND plan_title LIKE CONCAT('%', #{planTitle}, '%')
+                    </if>
+                </if>
+                <if test="sido == null or sido == ''">
+                    <if test="planTitle != null and planTitle != ''">
+                        plan_title LIKE CONCAT('%', #{planTitle}, '%')
+                    </if>
+                </if>
+            </if>
+            AND plan_share = 1
+        </where>
+    </select>
+
+	<update id="updatePlanHit" parameterType="integer">
+		UPDATE plan_info SET
+		plan_board_hit = plan_board_hit + 1 WHERE plan_no =
+		#{planNo}
+	</update>
+
+	<update id="updatePlanJjim" parameterType="integer">
+		UPDATE plan_info SET
+		plan_board_jjim = plan_board_jjim + 1 WHERE plan_no =
+		#{planNo}
+	</update>
+
+	<update id="updatePlanJjimMinus" parameterType="integer">
+		UPDATE plan_info
+		SET plan_board_jjim = plan_board_jjim - 1 WHERE plan_no =
+		#{planNo}
+	</update>
+
+	<select id="selectUserPlans" parameterType="string"
+		resultMap="planBasic">
+		SELECT * FROM plan_info WHERE user_id = #{userId}
+	</select>
+
+	<select id="selectAllPlans" resultMap="planBasic">
+		SELECT * FROM plan_info
+	</select>
+
+	<select id="selectAllSharedPlans" resultMap="planBasic">
+		SELECT * FROM
+		plan_info WHERE plan_share = 1
+	</select>
+
+	<select id="selectAllSharedPlansByOrderAsc"
+		parameterType="string" resultMap="planBasic">
+		SELECT * FROM plan_info WHERE
+		plan_share = 1 order by ${param};
+	</select>
+
+	<select id="selectAllSharedPlansByOrderDesc"
+		parameterType="string" resultMap="planBasic">
+		SELECT * FROM plan_info WHERE
+		plan_share = 1 order by ${param} desc;
+	</select>
+
+	<select id="selectRecommend" parameterType="planDto"
+		resultMap="planBasic">
+		SELECT * FROM plan_info WHERE plan_share = 1 and
+		gugun=#{gugun} and sido=#{sido} order by plan_board_jjim desc;
+	</select>
+
+	<select id="selectPlanNo" parameterType="planDto"
+		resultType="integer">
+		SELECT plan_no from plan_info where user_id = #{userId} and
+		plan_title =
+		#{planTitle}
+	</select>	
+
+	<select id="selectPlanChecklist" parameterType="integer"
+		resultMap="planChecklistBasic">
+		SELECT * FROM plan_checklist_info WHERE plan_no = #{planNo}
+	</select>
+
+	<delete id="deletePlanChecklist" parameterType="integer">
+		DELETE FROM
+		plan_checklist_info WHERE plan_no = #{planNo}
+	</delete>
+
+	<insert id="insertPlanChecklist"
+		parameterType="PlanChecklistDto">
+		INSERT INTO plan_checklist_info (user_id, plan_no,
+		check_no, is_check,
+		check_item)
+		VALUES (#{userId}, #{planNo},
+		#{checkNo}, #{isCheck}, #{checkItem})
+	</insert>
+	
+	<delete id="deletePlanByPlanNo" parameterType="int">
+    DELETE FROM plan_info
+    WHERE plan_no = #{planNo}
+</delete>
+
+<!-- PlanDetailDto를 기반으로 삭제하는 매퍼 -->
+<delete id="deletePlanDetailByPlanNo" parameterType="int">
+    DELETE FROM plan_detail
+    WHERE plan_no = #{planNo}
+</delete>
+
+	<resultMap type="PlanDto" id="planBasic">
+		<id column="plan_no" property="planNo" />
+		<result column="plan_title" property="planTitle" />
+		<result column="user_id" property="userId" />
+		<result column="plan_share" property="planShare" />
+		<result column="write_date" property="writeDate" />
+		<result column="plan_board_hit" property="planBoardHit" />
+		<result column="plan_board_jjim" property="planBoardJjim" />
+		<result column="sido_code" property="sidoCode" />
+		<result column="gugun_code" property="gugunCode" />
+	</resultMap>
+
+	<resultMap type="PlanDetailDto" id="planDetailBasic">
+		<id column="plan_detail_no" property="planDetailNo" />
+		<result column="plan_no" property="planNo" />
+		<result column="content_id" property="contentId" />
+		<result column="route_day" property="routeDay" />
+		<result column="route_no" property="routeNo" />
+		<result column="title" property="title" />
+		<result column="detail" property="detail" />
+		<result column="address" property="address" />
+	</resultMap>
+
+	<resultMap id="planChecklistBasic" type="PlanChecklistDto">
+		<id column="plan_checklist_no" property="planChecklistNo" />
+		<result column="user_id" property="userId" />
+		<result column="plan_no" property="planNo" />
+		<result column="check_no" property="checkNo" />
+		<result column="is_check" property="isCheck" />
+		<result column="check_item" property="checkItem" />
+	</resultMap>
+
+
+</mapper>

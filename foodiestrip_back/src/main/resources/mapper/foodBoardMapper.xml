@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foodiestrip.model.dao.FoodBoardDao">
+	<!-- 시도 코드 넣어야할듯? -->
+	<select id="selectFoodBoardListByTitle" parameterType="string"
+		resultMap="foodBoardBasic">
+		SELECT *
+		FROM food_board_info
+		WHERE food_store_title LIKE
+		CONCAT('%', #{keyword}, '%')
+	</select>
+
+	<insert id="foodBoardWrite" parameterType="FoodBoardDto">
+		insert into
+		food_board_info (content_id, user_id, food_store_title,
+		food_board_review,
+		food_board_rank, food_board_my_money,
+		food_board_addr,
+		food_board_receipt_image, food_board_image, content_type_name)
+		values
+		(#{contentId}, #{userId},
+		#{foodStoreTitle}, #{foodBoardReview},
+		#{foodBoardRank},
+		#{foodBoardMyMoney},
+		#{foodBoardAddr},
+		#{foodBoardReceiptImage},
+		#{foodBoardImage},
+		#{contentTypeName})
+	</insert>
+
+	<select id="foodBoardView" parameterType="integer"
+		resultMap="foodBoardBasic">
+		select * from food_board_info where food_board_no =
+		#{foodBoardNo}
+	</select>
+
+	<select id="selectFoodBoardList" resultMap="foodBoardBasic">
+		select * from food_board_info
+		order by
+		<choose>
+			<when test="sortOrder != null and sortOrder != ''">
+				${sortOrder}
+			</when>
+			<otherwise>
+				food_board_no desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="totalFoodBoardRow" resultType="integer">
+		select count(*) as
+		totalRow from food_board_info
+	</select>
+
+	<update id="foodBoardModify" parameterType="FoodBoardDto">
+		update
+		food_board_info
+		set food_store_title=#{foodStoreTitle},
+		food_board_review=#{foodBoardReview},
+		food_board_rank=#{foodBoardRank},
+		food_board_my_money=#{foodBoardMyMoney},
+		food_board_addr=#{foodBoardAddr},
+		food_board_receipt_image=#{foodBoardReceiptImage},
+		food_board_image=#{foodBoardImage},
+		content_type_name = #{contentTypeName}
+		where food_board_no=#{foodBoardNo}
+	</update>
+
+	<update id="updateFoodBoardHit" parameterType="integer">
+		update
+		food_board_info set food_board_hit = food_board_hit + 1 where
+		food_board_no = #{foodBoardNo}
+	</update>
+
+	<update id="updateFoodBoardJjim" parameterType="integer">
+		update
+		food_board_info set food_board_jjim = food_board_jjim + 1 where
+		food_board_no = #{foodBoardNo}
+	</update>
+
+	<delete id="foodBoardDelete" parameterType="integer">
+		delete from
+		food_board_info where food_board_no = #{foodBoardNo}
+	</delete>
+
+	<!-- 내가 작성한 게시물 조회 -->
+	<select id="userFoodBoardList" parameterType="string"
+		resultMap="foodBoardBasic">
+		select * from food_board_info
+		where user_id = #{userId}
+		order
+		by food_board_no desc
+	</select>
+
+	<!-- 맛집 검색 -->
+	<select id="hotplaceSearch" parameterType="integer"
+		resultMap="foodBasic">
+		select *
+		from food_info
+		where sido_code = #{sidoCode}
+		AND
+		gugun_code = #{gugunCode}
+		And content_type_id = #{foodCode}
+		order by hit
+		desc
+		limit 0, 300;
+	</select>
+
+	<!-- 맛집 상세조회 -->
+	<select id="getStoreDetail" parameterType="integer"
+		resultMap="foodBasic">
+		select *
+		from food_info
+		where content_id = #{contentId}
+	</select>
+	<select id="selectFoodBoardInfo" parameterType="foodDto"
+		resultType="foodBoardDto">
+		select fb.content_id AS contentId,
+		fb.user_id AS userId,
+		fb.food_store_title AS foodStoreTitle,
+		fb.food_board_review AS foodBoardReview,
+		fb.food_board_hit AS foodBoardHit,
+		fb.food_board_jjim AS foodBoardJjim,
+		fb.food_board_rank AS foodBoardRank,
+		fb.food_board_my_money AS foodBoardMyMoney,
+		fb.food_board_addr AS foodBoardAddr,
+		fb.food_board_receipt_image AS foodBoardReceiptImage,
+		fb.food_board_image AS foodBoardImage,
+		fb.content_type_name AS contentTypeName,
+		fb.write_Date AS writeDate,
+		f.sido_code AS sidoCode,
+		f.gugun_code AS gugunCode,
+		f.content_type_id AS contentTypeId
+		FROM food_board_info fb JOIN food_info f ON
+		fb.content_id = f.content_id
+		<where>
+			1=1
+			<if test="sidoCode != null and sidoCode != '' and sidoCode != 0">
+				AND f.sido_code = #{sidoCode}
+			</if>
+			<if
+				test="gugunCode != null and gugunCode != '' and gugunCode != 0">
+				AND f.gugun_code = #{gugunCode}
+			</if>
+			<if
+				test="contentTypeId != null and contentTypeId != '' and contentTypeId != 0">
+				AND f.content_type_id = #{contentTypeId}
+			</if>
+			<if test="title != null and title != ''">
+				AND f.food_store_title LIKE CONCAT('%', #{title}, '%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 특정 맛집 리뷰 조회 -->
+	<select id="getStoreReviews" parameterType="integer"
+		resultMap="foodBoardBasic">
+		select *
+		from food_board_info
+		where content_id = #{contentId}
+	</select>
+	
+	<!-- 특정 맛집 인증된 리뷰 조회 -->
+	<select id="getAuthorizedReviews" parameterType="integer"
+		resultMap="foodBoardBasic">
+		select *
+		from food_board_info
+		where content_id = #{contentId} and food_board_my_money = 1
+	</select>
+
+<!-- 랜덤 음식점 추천 -->
+	<select id="getRandomFoodStore" parameterType="foodDto"
+		resultMap="foodBasic">
+		SELECT *
+		FROM food_info
+		<where>
+			<if test="sidoCode != null and sidoCode != '' and sidoCode != 0">
+				AND sido_code = #{sidoCode}
+			</if>
+			<if test="gugunCode != null and gugunCode != '' and gugunCode != 0">
+				AND gugun_code = #{gugunCode}
+			</if>
+			<if test="contentTypeId != null and contentTypeId != '' and contentTypeId != 0">
+				AND content_type_id = #{contentTypeId}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 평균값 추출 -->
+	<select id="getAvgRankMyMoney" parameterType="int" resultType="float">
+        SELECT AVG(food_board_rank) AS avg_rank
+        FROM food_board_info
+        WHERE content_id = #{contentId}
+          AND food_board_my_money = 1
+    </select>
+    
+    <select id="getAvgRank" parameterType="integer" resultType="float">
+        SELECT AVG(food_board_rank) AS avg_rank
+        FROM food_board_info
+        WHERE content_id = #{contentId}
+    </select>
+    
+    <select id="getCntReviewMyMoney" parameterType="integer" resultType="integer">
+        SELECT count(*)
+        FROM food_board_info
+        WHERE content_id = #{contentId}
+        AND food_board_my_money = 1
+    </select>
+    
+    <select id="getCntReview" parameterType="integer" resultType="integer">
+        SELECT count(*)
+        FROM food_board_info
+        WHERE content_id = #{contentId}
+    </select>
+
+	<resultMap type="FoodBoardDto" id="foodBoardBasic">
+		<id column="food_board_no" property="foodBoardNo"></id>
+		<result column="content_id" property="contentId" />
+		<result column="user_id" property="userId" />
+		<result column="food_store_title" property="foodStoreTitle" />
+		<result column="food_board_review" property="foodBoardReview" />
+		<result column="food_board_hit" property="foodBoardHit" />
+		<result column="food_board_jjim" property="foodBoardJjim" />
+		<result column="food_board_rank" property="foodBoardRank" />
+		<result column="food_board_my_money"
+			property="foodBoardMyMoney" />
+		<result column="food_board_addr" property="foodBoardAddr" />
+		<result column="food_board_receipt_image"
+			property="foodBoardReceiptImage" />
+		<result column="food_board_image" property="foodBoardImage" />
+		<result column="write_Date" property="writeDate" />
+		<result column="content_type_name" property="contentTypeName" />
+	</resultMap>
+
+	<resultMap id="foodBasic" type="FoodDto">
+		<id property="contentId" column="content_id" />
+		<result property="contentTypeId" column="content_type_id" />
+		<result property="title" column="title" />
+		<result property="addr1" column="addr1" />
+		<result property="addr2" column="addr2" />
+		<result property="tel" column="tel" />
+		<result property="hit" column="hit" />
+		<result property="sidoCode" column="sido_code" />
+		<result property="gugunCode" column="gugun_code" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="contentTypeName" column="content_type_name" />
+	</resultMap>
+
+</mapper>

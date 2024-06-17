@@ -1,0 +1,77 @@
+.scrollBox {
+  overflow: auto;
+  white-space: nowrap;
+  overflow-y: auto;
+}
+
+.scrollBoxItem {
+  display: inline-block;
+  padding: 10px;
+  margin: 20px;
+  border: 1px solid grey;
+  overflow-y: initial !important;
+}
+
+.scrollBoxItem:hover {
+  border: 1px solid #fb3640;
+}
+
+.storeImg {
+  height: 300px;
+  aspect-ratio: 1/1;
+  object-fit: fill;
+}
+
+.storeDetail {
+  text-align: center;
+  margin: 0px auto;
+  justify-content: center;
+}
+
+.sideBatch {
+  display: flex;
+  justify-content: center;
+}
+
+.textBox {
+  scroll-behavior: auto;
+  width: 90%;
+  height: 100px;
+
+  box-shadow: 1px 1px 1px 1px grey;
+}
+
+.bufferBox {
+  width: 20px;
+  height: 20px;
+}
+
+.moreBtn {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+}
+
+.bufferBox {
+  padding-top: 100px;
+}
+
+.infoBox {
+  height: 50rem;
+}
+
+.jjim {
+  background-color: white;
+  font-size: small;
+  /* border-color: black; */
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+}
+
+.jjim:hover {
+  border-color: black;
+}
+
+.addr {
+  color: rgb(179, 173, 173);
+}

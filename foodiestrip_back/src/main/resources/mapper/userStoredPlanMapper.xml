@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.foodiestrip.model.dao.UserStoredPlanDao">
+
+    <insert id="insertUserStoredPlan" parameterType="UserStoredPlanDto">
+        INSERT INTO user_stored_plan_info (user_id, plan_no)
+        VALUES (#{userId}, #{planNo})
+    </insert>
+    
+    <delete id="deleteUserStoredPlan" parameterType="UserStoredPlanDto">
+        DELETE FROM user_stored_plan_info WHERE plan_no = #{planNo} and user_id = #{userId}
+    </delete>
+    
+    <select id="selectAllUserStoredPlans" parameterType="string" resultMap="userStoredPlanBasic">
+        SELECT * FROM user_stored_plan_info WHERE user_id = #{userId}
+    </select>
+    
+    <resultMap type="UserStoredPlanDto" id="userStoredPlanBasic">
+        <id column="user_stored_plan_no" property="userStoredPlanNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="plan_no" property="planNo"/>
+    </resultMap>
+
+</mapper>

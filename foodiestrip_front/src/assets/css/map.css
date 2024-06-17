@@ -1,0 +1,169 @@
+.map-area {
+  display: flex;
+  position: relative;
+
+  .searchbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1000px;
+    z-index: 10000;
+    background-color: #ffffffc5;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+
+    .results {
+      flex: 1 1 auto;
+      overflow-y: auto;
+
+      .place {
+        padding: 8px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: aliceblue;
+        }
+
+        h4 {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .addr {
+    color: rgb(179, 173, 173);
+  }
+
+  .planBox {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 1000px;
+    z-index: 10000;
+    background-color: #ffffffc5;
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+
+    .planTitle {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      vertical-align: middle;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+    .planBtn {
+      margin: 5px;
+      padding: auto;
+      border-radius: 10px;
+    }
+
+    .plan-description {
+      border-radius: 5px;
+      resize: none;
+      border-color: rgb(218, 215, 215);
+    }
+  }
+}
+
+.plan {
+  overflow-y: auto;
+}
+
+.back-button {
+  margin-left: 20%;
+  margin-top: 30px;
+  margin-bottom: 30px;
+
+  width: 40px;
+  height: 40px;
+
+  text-align: center;
+  font-size: large;
+
+  border-radius: 50%;
+}
+.keward-result {
+  text-align: center;
+  .searchbox {
+    height: 1000px;
+    z-index: 10000;
+    background-color: #ffffffaa;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+
+    .results {
+      flex: 1 1 auto;
+      overflow-y: auto;
+
+      .place {
+        padding: 8px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: aliceblue;
+        }
+
+        h4 {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .btnGroup {
+    margin-top: 30px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .mapBox {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/*
+여기부터 userPlanView에서 사용하는 Css
+*/
+
+.bi {
+  transform: scaleX(-1);
+}
+
+#search-sido,
+#search-gugun,
+#search-food {
+  width: 10px;
+  height: 40px;
+}
+
+.btn-box {
+  justify-content: center;
+}
+
+.plan .place {
+  transition: background-color 0.3s ease;
+}
+
+.plan .place .completed {
+  text-decoration: line-through;
+}
+
+.plan .place.planItem {
+  cursor: pointer;
+}
+
+.plan .place.bg-completed {
+  background-color: #f0f0f0; /* 어둡게 표시될 배경색 */
+}
+
+.day {
+  width: 40px;
+}
+
+/* userPlanView CSS 종료*/
