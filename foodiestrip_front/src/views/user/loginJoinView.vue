@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user.js";
 import { useMenuStore } from "@/stores/menu";
 import { join, idCheck, nameCheck } from "@/api/user.js";
+//import { getGugunList } from "@/api/attraction.js";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

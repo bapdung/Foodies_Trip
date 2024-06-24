@@ -36,6 +36,25 @@ public class AttractionController {
 		}
 	}
 
+	//loginjoin 페이지에서 api로 안 받아줘서 RequestParam으로 받아야하는 문제 발생
+	//loginJoinView 수정 후 밑 함수만 남기고 지워야할듯
+	@GetMapping("/gugun")
+	public ResponseEntity<?> gugunGetQuery(@RequestParam(value = "sidoCode", required = true) String sidoCode) {
+	    System.out.println(sidoCode);
+	    try {
+	        Map<String, Object> response = new HashMap<>();
+	        int sido = Integer.parseInt(sidoCode);
+	        List<GugunDto> gugunList = attractionService.gugunList(sido);
+	        response.put("gugunList", gugunList);
+	        return ResponseEntity.ok(response);
+	    } catch (NumberFormatException e) {
+	        return ResponseEntity.badRequest().body("잘못된 시도 코드 형식입니다.");
+	    } catch (SQLException e) {
+	        return ResponseEntity.internalServerError().body("데이터베이스 오류가 발생했습니다.");
+	    }
+	}
+	
+	
 	@GetMapping("/gugun/{sidoCode}")
 	public ResponseEntity<?> gugunGetPath(@PathVariable(value = "sidoCode", required = true) String sidoCode) {
 		System.out.println(sidoCode);
