@@ -158,6 +158,7 @@ const foodBoard = ref({
   foodBoardReceiptImage: " ", // 영수증 이미지
   foodBoardImage: "", // 음식 이미지
   contentTypeName: "",
+  multifile: "", //음식 멀티파일 이미지
 });
 
 const insertReview = () => {

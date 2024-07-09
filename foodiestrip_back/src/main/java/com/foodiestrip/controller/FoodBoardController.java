@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.foodiestrip.model.dto.FoodBoardDto;
 import com.foodiestrip.model.dto.FoodDto;
 import com.foodiestrip.model.service.FoodBoardService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -119,10 +119,11 @@ public class FoodBoardController {
 	}
 	
 	@PostMapping("/board")
-	public ResponseEntity<?> foodBoardWrite(@RequestBody FoodBoardDto foodBoardDto) {
+	public ResponseEntity<?> foodBoardWrite(@RequestBody FoodBoardDto foodBoardDto, @RequestPart(value="multifile", required=false) final MultipartFile multipartFile) {
 	    System.out.println(foodBoardDto.toString());
 	    try {
 	        foodBoardService.foodBoardWrite(foodBoardDto);
+	        foodBoardService.foodBoardUploadFile(foodBoardDto.getFoodStoreTitle(), multipartFile);
 	        return ResponseEntity.ok().build();
 	    } catch (SQLException e) {
 	        return ResponseEntity.internalServerError().body("데이터베이스 오류가 발생했습니다.");
