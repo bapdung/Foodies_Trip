@@ -262,3 +262,13 @@ $RECYCLE.BIN/
 
 *.env
 
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+/resources/config.properties
+
+
+
+

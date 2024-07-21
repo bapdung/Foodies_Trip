@@ -125,15 +125,17 @@ public class FoodBoardServiceImpl implements FoodBoardService {
 	
 	//사진 업로드
 	@Override
-	public void foodBoardUploadFile(String fileName,  MultipartFile multipartFile) throws SQLException {
+	public String foodBoardUploadFile(String fileName,  MultipartFile multipartFile) throws SQLException {
 		try {
 			if(multipartFile != null) {
-				String profileURL = s3FileUploadService.upload(multipartFile);
-				System.out.println(profileURL);
+				String profileURL = s3FileUploadService.saveFile(multipartFile);
+				return profileURL;
 			}
 		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		
+
+		return null;
 		
 	}
 	

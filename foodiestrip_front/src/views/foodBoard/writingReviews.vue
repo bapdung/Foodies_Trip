@@ -1,16 +1,14 @@
 <script setup>
-import { KakaoMap, KakaoMapMarker } from "vue3-kakao-maps";
-
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-
-//유저 확인
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { localAxios } from "@/util/http-commons";
 
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
 const router = useRouter();
+const local = localAxios();
 
 const kakao = window.kakao;
 
@@ -22,24 +20,20 @@ const search = ref({
   results: [],
 });
 
-//custom overlay
-
+// custom overlay
 const lat = ref(37.566826);
 const lng = ref(126.9786567);
 const level = ref(4);
 
 const onLoadKakaoMap = (mapRef) => {
   map.value = mapRef;
-
   const ps = new kakao.maps.services.Places();
-
   ps.keywordSearch("역삼역 맛집", placesSearchCB);
 };
 
 const placesSearchCB = (data, status) => {
   if (status === kakao.maps.services.Status.OK) {
     const bounds = new kakao.maps.LatLngBounds();
-
     for (let marker of data) {
       const markerItem = {
         lat: marker.y,
@@ -57,113 +51,52 @@ const placesSearchCB = (data, status) => {
       markerList.value.push(markerItem);
       bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
     }
-
     map.value?.setBounds(bounds);
   }
 };
 
 const keyward = ref("");
 const addr = ref("");
-
-const onClickMapMarker = (markerItem) => {
-  console.log(markerItem.infoWindow);
-  keyward.value = markerItem.infoWindow.content;
-  addr.value = markerItem.infoWindow.addr;
-  if (markerItem.infoWindow?.visible !== null && markerItem.infoWindow?.visible !== undefined) {
-    markerItem.infoWindow.visible = !markerItem.infoWindow.visible;
-  } else {
-    markerItem.infoWindow.visible = true;
-  }
-};
-
-// 카테고리를 입력받아 검색
-const searchPlace = (e) => {
-  keyward.value = "";
-  keyward.value = e.target.value.trim();
-  console.log("keyward", keyward.value);
-  console.log(e);
-  if (keyward.value.length === 0) {
-    return;
-  }
-
-  const ps = new kakao.maps.services.Places();
-  ps.keywordSearch(keyward.value, (data, status, pgn) => {
-    console.log(data);
-    search.value.keyward = keyward.value;
-    search.value.pgn = pgn;
-    search.value.results = data;
-    markerList.value = [];
-
-    if (status === kakao.maps.services.Status.OK) {
-      const bounds = new kakao.maps.LatLngBounds();
-
-      for (let marker of data) {
-        const markerItem = {
-          lat: marker.y,
-          lng: marker.x,
-          infoWindow: {
-            content: marker.place_name,
-            categoryName: marker.category_name,
-            id: marker.id,
-            phone: marker.phone,
-            url: marker.place_url,
-            addr: marker.road_address_name,
-            visible: false,
-          },
-        };
-        markerList.value.push(markerItem);
-        bounds.extend(new kakao.maps.LatLng(Number(marker.y), Number(marker.x)));
-      }
-
-      map.value?.setBounds(bounds);
-    }
-  });
-};
-
 const imageSrc = ref(null);
 const ratings = ref(0);
 const previewImage = (e) => {
   const file = e.target.files[0];
+  foodBoard.value.multipartfile = file;
   if (file) {
     const reader = new FileReader();
-
     reader.onload = (e) => {
-      // 이미지 파일의 데이터 URL을 데이터 속성에 할당
       const base64String = e.target.result.split(",")[1];
       foodBoard.value.foodBoardImage = base64String;
       imageSrc.value = e.target.result;
     };
-
-    reader.readAsDataURL(file); // 파일을 Data URL 형태로 읽음
+    reader.readAsDataURL(file);
   }
 };
 
-//뒤로가기
 const goBack = () => {
   window.history.back();
 };
 
-const selectedfoodName = ref("기타"); //contentTypeName으로 넣을겨
-//저장하려는 코드
+const selectedfoodName = ref("기타");
 const foodBoard = ref({
-  contentId: 0, // 맛집 번호
-  userId: "", // 사용자 ID
-  foodStoreTitle: "", // 가게명
-  foodBoardReview: "", // 리뷰 내용
-  foodBoardHit: 0, // 조회수
-  foodBoardJjim: 0, // 찜 수
-  foodBoardRank: 0, // 평점
-  foodBoardMyMoney: false, // 내 돈 주고 싶은지 여부
-  foodBoardAddr: "", // 가게 주소
-  foodBoardReceiptImage: " ", // 영수증 이미지
-  foodBoardImage: "", // 음식 이미지
+  contentId: 0,
+  userId: "",
+  foodStoreTitle: "",
+  foodBoardReview: "",
+  foodBoardHit: 0,
+  foodBoardJjim: 0,
+  foodBoardRank: 0,
+  foodBoardMyMoney: false,
+  foodBoardAddr: "",
+  foodBoardReceiptImage: " ",
+  foodBoardImage: "",
   contentTypeName: "",
-  multifile: "", //음식 멀티파일 이미지
+  multipartfile: null, // null로 초기화
 });
 
 const insertReview = () => {
   markerList.value.filter((marker) => {
-    if (marker.infoWindow.content == keyward.value) {
+    if (marker.infoWindow.content === keyward.value) {
       foodBoard.value.contentId = marker.infoWindow.id;
       foodBoard.value.foodBoardAddr = marker.infoWindow.addr;
       foodBoard.value.foodStoreTitle = marker.infoWindow.content;
@@ -175,15 +108,28 @@ const insertReview = () => {
   postReviewData();
 };
 
-import { localAxios } from "@/util/http-commons";
-const local = localAxios();
-
 const postReviewData = async () => {
   try {
-    console.log("axios data", foodBoard.value);
-    await local.post(`/foodboard/board`, foodBoard.value, {
+    const formData = new FormData();
+
+    // 다른 필드 추가
+    for (const key in foodBoard.value) {
+      if (key !== "multipartfile") {
+        // 파일이 아닌 필드만 추가
+        formData.append(key, foodBoard.value[key]);
+      }
+    }
+
+    // 파일을 'multipartfile'이라는 이름으로 추가
+    if (foodBoard.value.multipartfile) {
+      console.log(foodBoard.value.multipartfile);
+      formData.append("multipartfile", foodBoard.value.multipartfile);
+    }
+
+    // axios로 전송
+    await local.post(`/foodboard/board`, formData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     window.alert("저장되었습니다!");

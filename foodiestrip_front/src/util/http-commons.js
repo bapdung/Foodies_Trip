@@ -85,7 +85,6 @@ function localAxios() {
   //     }
   //   );
   return instance;
-  
 }
 
 export { localAxios, stationAxios };
