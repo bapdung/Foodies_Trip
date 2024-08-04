@@ -16,7 +16,7 @@ public interface FoodBoardService {
     void foodBoardWrite(FoodBoardDto foodBoardDto) throws SQLException;
     
     //음식 게시물 사진 업로드
-    void foodBoardUploadFile(String filename, MultipartFile multipartFile) throws SQLException;
+    String foodBoardUploadFile(String filename, MultipartFile multipartFile) throws SQLException;
     
     // 특정 음식 게시물 조회
     FoodBoardDto foodBoardView(int foodBoardNo) throws SQLException;

@@ -1,12 +1,14 @@
 package com.foodiestrip.controller;
 
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -119,11 +121,13 @@ public class FoodBoardController {
 	}
 	
 	@PostMapping("/board")
-	public ResponseEntity<?> foodBoardWrite(@RequestBody FoodBoardDto foodBoardDto, @RequestPart(value="multifile", required=false) final MultipartFile multipartFile) {
-	    System.out.println(foodBoardDto.toString());
+	public ResponseEntity<?> foodBoardWrite(FoodBoardDto foodBoardDto, @RequestPart(value = "multipartfile", required = false)final MultipartFile multipartFile) {
 	    try {
-	        foodBoardService.foodBoardWrite(foodBoardDto);
-	        foodBoardService.foodBoardUploadFile(foodBoardDto.getFoodStoreTitle(), multipartFile);
+			String foodUrl = foodBoardService.foodBoardUploadFile(foodBoardDto.getFoodStoreTitle(), multipartFile);
+			if(foodUrl != null){
+				foodBoardDto.setFoodBoardImage(foodUrl);
+			}
+			foodBoardService.foodBoardWrite(foodBoardDto);
 	        return ResponseEntity.ok().build();
 	    } catch (SQLException e) {
 	        return ResponseEntity.internalServerError().body("데이터베이스 오류가 발생했습니다.");
