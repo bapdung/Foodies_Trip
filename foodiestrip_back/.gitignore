@@ -261,16 +261,8 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/maven,eclipse,java,windows,macos,intellij+all
 
 *.env
-
-# IntelliJ IDEA
-.idea/
 *.iml
-out/
-
-# Ignore config.properties file
-foodiestrip_back/src/main/resources/config.properties
 
 
-
-
+config.properties
 
