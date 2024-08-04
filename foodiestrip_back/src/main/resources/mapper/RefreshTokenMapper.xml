@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.foodiestrip.model.dao.RefreshTokenDao">
+    <resultMap id="refreshTokenResultMap" type="RefreshTokenDto">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="refreshToken" column="refresh_token"/>
+    </resultMap>
+
+    <select id="findById" resultMap="refreshTokenResultMap">
+        SELECT *
+        FROM refresh_token
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByUserId" resultMap="refreshTokenResultMap">
+        SELECT *
+        FROM refresh_token
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="RefreshTokenDto">
+        INSERT INTO refresh_token (user_id, refresh_token)
+        VALUES (#{userId}, #{refreshToken})
+    </insert>
+
+    <update id="update">
+        UPDATE refresh_token
+        SET refresh_token = #{param2}
+        WHERE user_id = #{param1}
+    </update>
+
+    <delete id="delete">
+        DELETE
+        FROM refresh_token
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findByRefreshToken" resultMap="refreshTokenResultMap">
+        SELECT id, user_id, refresh_token
+        FROM refresh_token
+        WHERE refresh_token = #{refreshToken}
+    </select>
+</mapper>

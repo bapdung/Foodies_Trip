@@ -1,7 +1,15 @@
 <script setup>
+import { onMounted } from "vue";
 import { RouterView, RouterLink } from "vue-router";
+import { useUserStore } from '@/stores/user';
 import mainHeader from "@/components/layout/mainHeader.vue";
 import mainFooter from "@/components/layout/mainFooter.vue";
+
+const userStore = useUserStore();
+
+onMounted(async () => {
+  await userStore.initializeAuth();
+});
 </script>
 
 <template>

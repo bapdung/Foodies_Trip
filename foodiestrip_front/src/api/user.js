@@ -4,23 +4,45 @@ const local = localAxios();
 
 async function userConfirm(param, success, fail) {
   console.log("userConfirm 실행");
-  await local.post(`/user/login`, param).then(success).catch(fail);
+  try {
+    const response = await local.post(`/user/login`, param);
+    return response;
+  } catch (error) {
+    console.error("Login error:", error);
+    fail(error);
+  }
 }
 
 async function findById(userid, success, fail) {
   console.log("findById 실행");
-  local.defaults.headers["Authorization"] = sessionStorage.getItem("accessToken");
+  local.defaults.headers["Authorization"] = `Bearer ${sessionStorage.getItem("accessToken")}`;
   await local.get(`/user/info/${userid}`).then(success).catch(fail);
 }
 
 async function tokenRegeneration(user, success, fail) {
-  local.defaults.headers["refreshToken"] = sessionStorage.getItem("refreshToken"); //axios header에 refresh-token 셋팅
-  await local.post(`/user/refresh`, user).then(success).catch(fail);
+  const refreshToken = sessionStorage.getItem("refreshToken");
+  await local.post(`/user/refresh`, { refreshToken })
+    .then(response => {
+      if (response.data.accessToken) {
+        sessionStorage.setItem("accessToken", response.data.accessToken);
+        success(response.data);
+      } else {
+        fail(new Error("Token regeneration failed"));
+      }
+    })
+    .catch(fail);
 }
 
 async function logout(userid, success, fail) {
   console.log("logout 실행");
-  await local.get(`/user/logout/${userid}`).then(success).catch(fail);
+  local.defaults.headers["Authorization"] = `Bearer ${sessionStorage.getItem("accessToken")}`;
+  await local.get(`/user/logout/${userid}`)
+    .then(response => {
+      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("refreshToken");
+      success(response);
+    })
+    .catch(fail);
 }
 
 async function modify(user, success, fail) {
