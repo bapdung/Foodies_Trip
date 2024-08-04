@@ -6,9 +6,11 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 *.idea
+/.idea/
 
 # ignore yaml file
 application.yml
+config.properties
 
 # User-specific stuff
 .idea/**/workspace.xml

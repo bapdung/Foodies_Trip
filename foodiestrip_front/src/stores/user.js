@@ -61,12 +61,10 @@ export const useUserStore = defineStore("userStore", () => {
       let decodeToken = jwtDecode(token);
       console.log("디코딩한 토큰 : ", decodeToken);
 
-      // 토큰에서 userId를 추출하는 방식이 다를 수 있습니다.
-      // 실제 토큰 구조에 맞게 수정해야 합니다.
       const userId = decodeToken.id || decodeToken.userId || decodeToken.sub;
 
       if (!userId) {
-        console.error("User ID not found in token");
+        console.error("User ID 없음");
         return;
       }
 
