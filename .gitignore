@@ -262,4 +262,12 @@ $RECYCLE.BIN/
 
 *.env
 
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Ignore config.properties file
+foodiestrip_back/src/main/resources/config.properties
+
 
