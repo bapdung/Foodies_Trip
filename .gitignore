@@ -267,4 +267,7 @@ $RECYCLE.BIN/
 *.iml
 out/
 
+# Ignore config.properties file
+foodiestrip_back/src/main/resources/config.properties
+
 

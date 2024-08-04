@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.foodiestrip.model.dao.FoodBoardDao;
 import com.foodiestrip.model.dto.FoodBoardDto;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class FoodBoardServiceImpl implements FoodBoardService {
 
 	private final FoodBoardDao foodBoardDao;
+	private final S3FileUploadService s3FileUploadService;
 
 	@Override
 	public void foodBoardDelete(int foodBoardNo) throws SQLException {
@@ -119,6 +121,22 @@ public class FoodBoardServiceImpl implements FoodBoardService {
 		arr[2] = Math.round(foodBoardDao.getAvgRank(contentId)* 10) / 10.0;
 		arr[3] = Math.round(foodBoardDao.getAvgRankMyMoney(contentId)* 10) / 10.0;
 		return arr;
+	}
+	
+	//사진 업로드
+	@Override
+	public String foodBoardUploadFile(String fileName,  MultipartFile multipartFile) throws SQLException {
+		try {
+			if(multipartFile != null) {
+				String profileURL = s3FileUploadService.saveFile(multipartFile);
+				return profileURL;
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+		
 	}
 	
 }
