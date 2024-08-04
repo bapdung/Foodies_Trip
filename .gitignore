@@ -262,3 +262,5 @@ $RECYCLE.BIN/
 
 *.env
 
+config.properties
+
