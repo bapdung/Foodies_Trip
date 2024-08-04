@@ -1,130 +1,153 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.foodiestrip.model.dao.UserDao">
 
-	<resultMap type="UserDto" id="userBasic">
-		<id column="user_id" property="userId" />
-		<result column="user_pwd" property="userPwd" />
-		<result column="user_salt" property="userSalt" />
-		<result column="user_name" property="userName" />
-		<result column="user_nickname" property="userNickname" />
-		<result column="email_id" property="emailId" />
-		<result column="email_domain" property="emailDomain" />
-		<result column="sido" property="sido" />
-		<result column="gugun" property="gugun" />
-		<result column="token" property="refreshToken" />
-		<result column="is_admin" property="isAdmin" />
-	</resultMap>
+    <resultMap type="UserDto" id="userBasic">
+        <id column="user_id" property="userId"/>
+        <result column="user_pwd" property="userPwd"/>
+        <result column="user_salt" property="userSalt"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_nickname" property="userNickname"/>
+        <result column="email_id" property="emailId"/>
+        <result column="email_domain" property="emailDomain"/>
+        <result column="sido" property="sido"/>
+        <result column="gugun" property="gugun"/>
+        <result column="token" property="refreshToken"/>
+        <result column="is_admin" property="isAdmin"/>
+    </resultMap>
 
-	<resultMap type="UserPreferenceDto" id="userPreferenceBasic">
-		<id column="user_preference_no" property="userPreferenceNo" />
-		<result column="user_id" property="userId" />
-		<result column="mountain_pref" property="mountainPref" />
-		<result column="sea_pref" property="seaPref" />
-		<result column="tour_pref" property="tourPref" />
-		<result column="festival_pref" property="festivalPref" />
-		<result column="sport_pref" property="sportPref" />
-		<result column="shopping_pref" property="shoppingPref" />
-		<result column="food_pref" property="foodPref" />
-	</resultMap>
+    <resultMap type="UserPreferenceDto" id="userPreferenceBasic">
+        <id column="user_preference_no" property="userPreferenceNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="mountain_pref" property="mountainPref"/>
+        <result column="sea_pref" property="seaPref"/>
+        <result column="tour_pref" property="tourPref"/>
+        <result column="festival_pref" property="festivalPref"/>
+        <result column="sport_pref" property="sportPref"/>
+        <result column="shopping_pref" property="shoppingPref"/>
+        <result column="food_pref" property="foodPref"/>
+    </resultMap>
 
-	<select id="login" parameterType="UserDto" resultMap="userBasic">
-		SELECT user_id, user_pwd, user_salt, user_name, user_nickname, email_id,
-		email_domain, sido, gugun, token, is_admin
-		FROM user_info
-		WHERE user_id = #{userId}
-	</select>
-	
-	<insert id="join" parameterType="UserDto">
-		INSERT INTO user_info (user_id, user_pwd, user_salt, user_name,
-		user_nickname, email_id, email_domain, sido, gugun, is_admin)
-		VALUES (#{userId}, #{userPwd}, #{userSalt}, #{userName}, #{userNickname},
-		#{emailId}, #{emailDomain}, #{sido}, #{gugun}, #{isAdmin})
-	</insert>
+    <select id="login" parameterType="UserDto" resultMap="userBasic">
+        SELECT user_id,
+               user_pwd,
+               user_salt,
+               user_name,
+               user_nickname,
+               email_id,
+               email_domain,
+               sido,
+               gugun,
+               token,
+               is_admin
+        FROM user_info
+        WHERE user_id = #{userId}
+    </select>
 
-	<select id="userInfo" parameterType="string"
-		resultMap="userBasic">
-		SELECT user_id, user_pwd, user_salt, user_name, user_nickname, email_id,
-		email_domain, sido, gugun, token, is_admin
-		FROM user_info
-		WHERE user_id = #{userId}
-	</select>
-	
-	 <delete id="deleteUserInfo" parameterType="string">
-        DELETE FROM user_info WHERE user_id = #{userId}
+    <insert id="join" parameterType="UserDto">
+        INSERT INTO user_info (user_id, user_pwd, user_salt, user_name,
+                               user_nickname, email_id, email_domain, sido, gugun, is_admin)
+        VALUES (#{userId}, #{userPwd}, #{userSalt}, #{userName}, #{userNickname},
+                #{emailId}, #{emailDomain}, #{sido}, #{gugun}, #{isAdmin})
+    </insert>
+
+    <select id="userInfo" parameterType="string"
+            resultMap="userBasic">
+        SELECT user_id,
+               user_pwd,
+               user_salt,
+               user_name,
+               user_nickname,
+               email_id,
+               email_domain,
+               sido,
+               gugun,
+               token,
+               is_admin
+        FROM user_info
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="deleteUserInfo" parameterType="string">
+        DELETE
+        FROM user_info
+        WHERE user_id = #{userId}
     </delete>
 
-	<update id="updateUserInfo" parameterType="UserDto">
-		UPDATE user_info
-		SET
-		user_pwd = #{userPwd},
-		user_name = #{userName},
-		user_nickname = #{userNickname},
-		email_id = #{emailId},
-		email_domain = #{emailDomain},
-		sido = #{sido},
-		gugun = #{gugun}
-		WHERE
-		user_id = #{userId}
-	</update>
+    <update id="updateUserInfo" parameterType="UserDto">
+        UPDATE user_info
+        SET user_pwd      = #{userPwd},
+            user_name     = #{userName},
+            user_nickname = #{userNickname},
+            email_id      = #{emailId},
+            email_domain  = #{emailDomain},
+            sido          = #{sido},
+            gugun         = #{gugun}
+        WHERE user_id = #{userId}
+    </update>
 
 
-	<update id="saveRefreshToken" parameterType="UserDto">
-		UPDATE user_info
-		SET token = #{refreshToken}
-		WHERE user_id = #{userId}
-	</update>
+    <update id="saveRefreshToken" parameterType="UserDto">
+        UPDATE user_info
+        SET token = #{refreshToken}
+        WHERE user_id = #{userId}
+    </update>
 
-	<select id="getRefreshToken" parameterType="string"
-		resultType="string">
-		SELECT token
-		FROM user_info
-		WHERE user_id = #{userId}
-	</select>
+    <select id="getRefreshToken" parameterType="string"
+            resultType="string">
+        SELECT token
+        FROM user_info
+        WHERE user_id = #{userId}
+    </select>
 
-	<update id="deleteRefreshToken" parameterType="string">
-		UPDATE user_info
-		SET token = NULL
-		WHERE user_id = #{userId}
-	</update>
+    <update id="deleteRefreshToken" parameterType="string">
+        UPDATE user_info
+        SET token = NULL
+        WHERE user_id = #{userId}
+    </update>
 
-	<select id="idCheck" parameterType="string" resultType="integer">
-		SELECT COUNT(user_id) FROM user_info WHERE user_id = #{userId}
-	</select>
+    <select id="idCheck" parameterType="string" resultType="integer">
+        SELECT COUNT(user_id)
+        FROM user_info
+        WHERE user_id = #{userId}
+    </select>
 
-	<insert id="insertUserPreference"
-		parameterType="UserPreferenceDto">
-		INSERT INTO user_preference_info (user_id, mountain_pref, sea_pref,
-		tour_pref, festival_pref, sport_pref, shopping_pref, food_pref)
-		VALUES (#{userId}, #{mountainPref}, #{seaPref}, #{tourPref},
-		#{festivalPref}, #{sportPref}, #{shoppingPref}, #{foodPref})
-	</insert>
+    <insert id="insertUserPreference"
+            parameterType="UserPreferenceDto">
+        INSERT INTO user_preference_info (user_id, mountain_pref, sea_pref,
+                                          tour_pref, festival_pref, sport_pref, shopping_pref, food_pref)
+        VALUES (#{userId}, #{mountainPref}, #{seaPref}, #{tourPref},
+                #{festivalPref}, #{sportPref}, #{shoppingPref}, #{foodPref})
+    </insert>
 
-	<delete id="deleteUserPreference" parameterType="string">
-		DELETE FROM user_preference_info WHERE user_id =
-		#{userId}
-	</delete>
+    <delete id="deleteUserPreference" parameterType="string">
+        DELETE
+        FROM user_preference_info
+        WHERE user_id =
+              #{userId}
+    </delete>
 
-	<select id="selectUserPreferenceByUserId" parameterType="string"
-		resultMap="userPreferenceBasic">
-		SELECT * FROM user_preference_info WHERE user_id = #{userId}
-	</select>
+    <select id="selectUserPreferenceByUserId" parameterType="string"
+            resultMap="userPreferenceBasic">
+        SELECT *
+        FROM user_preference_info
+        WHERE user_id = #{userId}
+    </select>
 
-	<update id="updateUserPreference"
-		parameterType="UserPreferenceDto">
-		UPDATE user_preference_info
-		SET mountain_pref = #{mountainPref},
-		sea_pref = #{seaPref},
-		tour_pref = #{tourPref},
-		festival_pref = #{festivalPref},
-		sport_pref = #{sportPref},
-		shopping_pref = #{shoppingPref},
-		food_pref = #{foodPref}
-		WHERE user_id = #{userId}
-	</update>
-
+    <update id="updateUserPreference"
+            parameterType="UserPreferenceDto">
+        UPDATE user_preference_info
+        SET mountain_pref = #{mountainPref},
+            sea_pref      = #{seaPref},
+            tour_pref     = #{tourPref},
+            festival_pref = #{festivalPref},
+            sport_pref    = #{sportPref},
+            shopping_pref = #{shoppingPref},
+            food_pref     = #{foodPref}
+        WHERE user_id = #{userId}
+    </update>
 
 
 </mapper>

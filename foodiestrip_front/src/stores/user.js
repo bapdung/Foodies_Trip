@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { jwtDecode } from "jwt-decode";
@@ -25,22 +25,26 @@ export const useUserStore = defineStore("userStore", () => {
     console.log("로그인 JWT 인증 중");
     try {
       const response = await userConfirm(loginUser);
-      console.log("Full response:", response);
+      console.log("Login response:", response);
 
-      let { accessToken, refreshToken } = response.data;
+      if (response && response.data) {
+        let { accessToken, refreshToken } = response.data;
 
-      if (accessToken && refreshToken) {
-        console.log("로그인 성공");
-        isLogin.value = true;
-        isLoginError.value = false;
-        isValidToken.value = true;
-        sessionStorage.setItem("accessToken", accessToken);
-        sessionStorage.setItem("refreshToken", refreshToken);
+        if (accessToken && refreshToken) {
+          console.log("로그인 성공");
+          isLogin.value = true;
+          isLoginError.value = false;
+          isValidToken.value = true;
+          sessionStorage.setItem("accessToken", accessToken);
+          sessionStorage.setItem("refreshToken", refreshToken);
 
-        // 로그인 성공 후 유저 정보 가져오기
-        await getUserInfo(accessToken);
+          // 로그인 성공 후 유저 정보 가져오기
+          await getUserInfo(accessToken);
+        } else {
+          throw new Error("토큰 정보 없음");
+        }
       } else {
-        throw new Error("토큰 정보 없음");
+        throw new Error("Invalid login response");
       }
     } catch (error) {
       console.log("로그인 실패!!", error);
@@ -64,19 +68,21 @@ export const useUserStore = defineStore("userStore", () => {
       const userId = decodeToken.id || decodeToken.userId || decodeToken.sub;
 
       if (!userId) {
-        console.error("User ID 없음");
+        console.error("User ID not found in token");
         return;
       }
 
+      console.log("Fetching user info for userId:", userId);
       const response = await findById(userId);
+      console.log("User info response:", response);
 
-      if (response.status === httpStatusCode.OK) {
+      if (response && response.status === httpStatusCode.OK) {
         userInfo.value = response.data.userInfo;
         userPreferenceInfo.value = response.data.userInfo.userPreferenceDto;
         isLogin.value = true;
         isValidToken.value = true;
       } else {
-        console.log("유저 정보 없음");
+        console.log("유저 정보 없거나 응답이 예상과 다릅니다.");
         isLogin.value = false;
         isValidToken.value = false;
       }
@@ -145,12 +151,16 @@ export const useUserStore = defineStore("userStore", () => {
   };
 
   const initializeAuth = async () => {
-    console.log("초기화 함수");
     const accessToken = sessionStorage.getItem("accessToken");
     if (accessToken) {
-      isLogin.value = true;
+      console.log("accessToken 존재");
       isValidToken.value = true;
+      isLogin.value = true;
       await getUserInfo(accessToken);
+    } else {
+      console.log("accessToken 없음");
+      isLogin.value = false;
+      isValidToken.value = false;
     }
   };
 
@@ -164,5 +174,6 @@ export const useUserStore = defineStore("userStore", () => {
     getUserInfo,
     tokenRegenerate,
     userLogout,
+    initializeAuth,
   };
 });

@@ -13,10 +13,17 @@ async function userConfirm(param, success, fail) {
   }
 }
 
-async function findById(userid, success, fail) {
-  console.log("findById 실행");
-  local.defaults.headers["Authorization"] = `Bearer ${sessionStorage.getItem("accessToken")}`;
-  await local.get(`/user/info/${userid}`).then(success).catch(fail);
+async function findById(userid) {
+  console.log("findById 실행, userId:", userid);
+  try {
+    local.defaults.headers["Authorization"] = `Bearer ${sessionStorage.getItem("accessToken")}`;
+    const response = await local.get(`/user/info/${userid}`);
+    console.log("findById response:", response);
+    return response;
+  } catch (error) {
+    console.error("findById error:", error);
+    throw error;
+  }
 }
 
 async function tokenRegeneration(user, success, fail) {

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from "vue";
-import { RouterView, RouterLink } from "vue-router";
+import { RouterView } from "vue-router";
 import { useUserStore } from '@/stores/user';
 import mainHeader from "@/components/layout/mainHeader.vue";
 import mainFooter from "@/components/layout/mainFooter.vue";

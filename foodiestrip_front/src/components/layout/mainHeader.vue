@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { RouterLink, RouterView, useRouter } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { useMenuStore } from "@/stores/menu";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -20,24 +20,14 @@ const navigateToSearch = () => {
   }
 };
 
-// import { useRouter } from "vue-router";
-// import foodBoardView from "@/views/foodBoard/foodBoardView.vue";
+if(userInfo.value!=null){
+  console.log("in mainheader: ",userInfo.value)
+}
 
 const router = useRouter();
-// const isWriting = ref(false);
-
-// const showChildComponent = () => {
-//   isWriting.value = true;
-// };
-
-// const handleWriteEvent = () => {
-//   console.log("글쓰기 버튼 클릭됨"); // 이벤트 수신 시 콘솔에 출력
-//   router.push({ name: "food-board-write" });
-// };
 
 //로그아웃
 const logout = async () => {
-  // console.log("로그아웃하자");
   await userLogout();
   await changeMenuState();
   router.push({ name: "main" });
@@ -69,7 +59,7 @@ const word = ref(" ");
         <div class="ms-auto">
           <ul v-if="menuList[0].show" class="beforeLogin">
             <li class="login-item">
-              <RouterLink :to="{ name: 'login' }" class="login-item">Login</RouterLink>
+              <RouterLink :to="{ name: 'login' }" class="login-item" >Login</RouterLink>
             </li>
           </ul>
 
