@@ -68,12 +68,12 @@ const foreignTrip = [
   </div>
 
   <section class="cards">
-    <div class="col-md-10 mt-3">
+    <div class="col-md-10 mt-3 ">
       <div class="detail_title">
         <h2>국내 여행지 추천</h2>
         <p>올해는 국내여행 어때요?</p>
       </div>
-      <div class="row mt-4">
+      <div class="row mt-4 justify-content-center">
         <themeItem v-for="(item, index) in domesticTrip" :key="index" :item="item"></themeItem>
       </div>
 
@@ -85,7 +85,7 @@ const foreignTrip = [
         <h2>해외 여행지 추천</h2>
         <p>올해는 해외여행 어때요?</p>
       </div>
-      <div class="row mt-4">
+      <div class="row mt-4 justify-content-center">
         <themeItem v-for="(item, index) in foreignTrip" :key="index" :item="item"></themeItem>
       </div>
     </div>
