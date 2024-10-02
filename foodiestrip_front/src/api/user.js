@@ -6,6 +6,7 @@ async function userConfirm(param, success, fail) {
   console.log("userConfirm 실행");
   try {
     const response = await local.post(`/user/login`, param);
+    console.log("response값", response);
     return response;
   } catch (error) {
     console.error("Login error:", error);
@@ -16,13 +17,15 @@ async function userConfirm(param, success, fail) {
 async function findById(userid, success, fail) {
   console.log("findById 실행");
   local.defaults.headers["Authorization"] = `Bearer ${sessionStorage.getItem("accessToken")}`;
-  await local.get(`/user/info/${userid}`).then(success).catch(fail);
+  const response = await local.get(`/user/info/${userid}`).then(success).catch(fail);
+  return response;
 }
 
 async function tokenRegeneration(user, success, fail) {
   const refreshToken = sessionStorage.getItem("refreshToken");
-  await local.post(`/user/refresh`, { refreshToken })
-    .then(response => {
+  await local
+    .post(`/user/refresh`, { refreshToken })
+    .then((response) => {
       if (response.data.accessToken) {
         sessionStorage.setItem("accessToken", response.data.accessToken);
         success(response.data);
@@ -36,8 +39,9 @@ async function tokenRegeneration(user, success, fail) {
 async function logout(userid, success, fail) {
   console.log("logout 실행");
   local.defaults.headers["Authorization"] = `Bearer ${sessionStorage.getItem("accessToken")}`;
-  await local.get(`/user/logout/${userid}`)
-    .then(response => {
+  await local
+    .get(`/user/logout/${userid}`)
+    .then((response) => {
       sessionStorage.removeItem("accessToken");
       sessionStorage.removeItem("refreshToken");
       success(response);

@@ -3,12 +3,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { jwtDecode } from "jwt-decode";
 
-import {
-  userConfirm,
-  findById,
-  tokenRegeneration,
-  logout,
-} from "@/api/user.js";
+import { userConfirm, findById, tokenRegeneration, logout } from "@/api/user.js";
 import { httpStatusCode } from "@/util/http-status";
 
 export const useUserStore = defineStore("userStore", () => {
@@ -67,8 +62,11 @@ export const useUserStore = defineStore("userStore", () => {
         console.error("User ID 없음");
         return;
       }
+      console.log(userId);
 
       const response = await findById(userId);
+
+      console.log(response);
 
       if (response.status === httpStatusCode.OK) {
         userInfo.value = response.data.userInfo;
@@ -85,10 +83,7 @@ export const useUserStore = defineStore("userStore", () => {
       isLogin.value = false;
       isValidToken.value = false;
 
-      if (
-        error.response &&
-        error.response.status === httpStatusCode.UNAUTHORIZED
-      ) {
+      if (error.response && error.response.status === httpStatusCode.UNAUTHORIZED) {
         await tokenRegenerate();
       }
     }
