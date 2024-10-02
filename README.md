@@ -3,7 +3,7 @@
 ## 🥞 개요
 
 <p style="margin-left: 30px;">
-    <img src="README_assets/logo.png" alt="gagyebbyu Logo" width="110" />
+    <img src="README_assets/logo.PNG" alt="gagyebbyu Logo" width="110" />
 </p>
 
 - 팀명: **배고픈미슐랭**
@@ -41,7 +41,7 @@
 ## 🥨 주요 기능
 
 |                                          |                                          |
-| ---------------------------------------- | ---------------------------------------- | --- |
+| ---------------------------------------- | ---------------------------------------- |
 | 🍦 메인페이지                            | 🍩 로그인                                |
 | ![](./README_assets/메인페이지.gif)      | ![ ](./README_assets/로그인.gif)         |
 | 🍪 회원가입                              | 🥫 마이페이지                            |
@@ -56,14 +56,15 @@
 | ![ ](./README_assets/여행계획게시판.gif) | ![ ](./README_assets/관광지검색.gif)     |
 | 🍵 맛슐랭                                | 🍰 리뷰작성                              |
 | ![ ](./README_assets/맛슐랭.gif)         | ![ ](./README_assets/리뷰작성.gif)       |
-| <!--                                     | 🍬 리뷰요약                              |     |
-| ![ ](./README_assets/리뷰요약.gif)       |                                          | --> |
+
+<!--  |                                    | 🍬 리뷰요약                              |     
+| ![ ](./README_assets/리뷰요약.gif)       |                                          | --> 
 
 <br/>
 
 ## 🍜 ERD 다이어그램
 
-![ERD다이어그램](README_assets/ERD.PNG)
+![ERD다이어그램](README_assets/erd.PNG)
 
 <br/>
 
