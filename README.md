@@ -70,7 +70,7 @@
 
 ## 💬 요구사항정의서
 
-![API명세서](README_assets/요구사항정의서.gif)
+![요구사항정의서](README_assets/요구사항정의서.gif)
 
 ## 🍛 사용 기술
 
@@ -114,9 +114,8 @@
 
 <br/>
 
-<!-- ## 🥘 시스템 아키텍처
-
-![시스템 아키텍처](https://github.com/user-attachments/assets/5310207c-be50-4b7b-9994-f20f3ca457cb) -->
+## 🥘 시스템 아키텍처
+![아키텍처](README_assets/아키텍처.png)
 
 ## 🍔개발환경
 
