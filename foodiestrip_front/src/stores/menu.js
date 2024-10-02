@@ -3,8 +3,6 @@ import { defineStore } from "pinia";
 
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
-    { name: "로그인", show: true, routeName: "login" },
-    { name: "로그아웃", show: false, routeName: "logout" },
     { name: "my여행일정", show: false, routeName: "userPlan" },
     { name: "MyPage", show: false, routeName: "myPage" },
   ]);

@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-import { RouterLink, RouterView, useRouter } from "vue-router";
+import { ref, computed, watch } from "vue";
+import { RouterLink, useRouter } from "vue-router";
 import { useMenuStore } from "@/stores/menu";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -8,42 +8,38 @@ import { storeToRefs } from "pinia";
 const menuStore = useMenuStore();
 const userStore = useUserStore();
 const { menuList } = storeToRefs(menuStore);
-const { userInfo } = storeToRefs(userStore);
+const { isLogin, isValidToken } = storeToRefs(userStore);
 const { changeMenuState } = menuStore;
-const { userLogout } = userStore;
+const { userLogout, initializeAuth } = userStore;
+
+const router = useRouter();
+const word = ref("");
+
+const visibleMenus = computed(() => {
+  return menuList.value.filter(menu => isLogin.value);
+});
+
+watch(isLogin, (newValue) => {
+  changeMenuState();
+});
 
 const navigateToSearch = () => {
   const trimmedWord = word.value.trim();
-  word.value = " ";
   if (trimmedWord !== "") {
     router.push({ name: "search", params: { keyword: trimmedWord } });
+    word.value = "";
   }
 };
 
-// import { useRouter } from "vue-router";
-// import foodBoardView from "@/views/foodBoard/foodBoardView.vue";
-
-const router = useRouter();
-// const isWriting = ref(false);
-
-// const showChildComponent = () => {
-//   isWriting.value = true;
-// };
-
-// const handleWriteEvent = () => {
-//   console.log("글쓰기 버튼 클릭됨"); // 이벤트 수신 시 콘솔에 출력
-//   router.push({ name: "food-board-write" });
-// };
-
-//로그아웃
 const logout = async () => {
-  // console.log("로그아웃하자");
+  console.log('Logging out');
   await userLogout();
-  await changeMenuState();
   router.push({ name: "main" });
 };
 
-const word = ref(" ");
+// 컴포넌트 마운트 시 인증 상태 초기화
+initializeAuth();
+
 </script>
 
 <template>
@@ -60,14 +56,14 @@ const word = ref(" ");
               @keyup.enter="navigateToSearch"
               placeholder="도시나 여행지를 검색해보세요"
             />
-            <RouterLink :to="{ name: 'search', params: { keyword: word } }"
-              ><img class="icon" src="/images/icons/search.png"
-            /></RouterLink>
+            <button @click="navigateToSearch" class="searchBtn">
+              <img class="icon" src="/images/icons/search.png" alt="Search" />
+            </button>
           </div>
         </div>
 
         <div class="ms-auto">
-          <ul v-if="menuList[0].show" class="beforeLogin">
+          <ul v-if="!isLogin" class="beforeLogin">
             <li class="login-item">
               <RouterLink :to="{ name: 'login' }" class="login-item">Login</RouterLink>
             </li>
@@ -102,23 +98,12 @@ const word = ref(" ");
             <li class="nav-item">
               <RouterLink class="nav-link" :to="{ name: 'foodBoard' }"> 푸디's 맛슐랭 </RouterLink>
             </li>
-            <template v-for="(menu, index) in menuList" :key="menu.routeName">
-              <template v-if="menu.show && index >= 2">
-                <template v-if="index == 3">
-                  <li class="nav-item">
-                    <router-link :to="{ name: menu.routeName }" class="nav-link">{{
-                      menu.name
-                    }}</router-link>
-                  </li></template
-                >
-                <template v-else>
-                  <li class="nav-item">
-                    <router-link :to="{ name: menu.routeName }" class="nav-link">{{
-                      menu.name
-                    }}</router-link>
-                  </li>
-                </template>
-              </template>
+            <template v-if="isLogin">
+              <li v-for="menu in visibleMenus" :key="menu.routeName" class="nav-item">
+                <RouterLink :to="{ name: menu.routeName }" class="nav-link">
+                  {{ menu.name }}
+                </RouterLink>
+              </li>
             </template>
             <li class="nav-item">
               <a class="nav-link" href="#"> 지역별 추천 여행지 </a>

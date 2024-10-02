@@ -35,6 +35,10 @@ header {
   z-index: 10000000;
 }
 
+.searchBtn{
+  background-color: transparent;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
