@@ -156,4 +156,19 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+  const isLoginRequired = to.matched.some(record => record.meta.requiresAuth);
+
+  if (!userStore.isLogin) {
+    await userStore.initializeAuth();
+  }
+
+  if (isLoginRequired && !userStore.isLogin) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
+
 export default router;
