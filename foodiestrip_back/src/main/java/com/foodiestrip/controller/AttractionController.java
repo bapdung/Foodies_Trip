@@ -34,7 +34,7 @@ public class AttractionController {
 			Map<String, Object> response = new HashMap<>();
 			response.put("sidoList", sidoList);
 			response.put("gugunList", gugunList);
-			log.info("시도 API 결과가 호출: {}",response);
+			// log.info("시도 API 결과가 호출: {}",response);
 			return ResponseEntity.ok(response);
 		} catch (SQLException e) {
 			return ResponseEntity.internalServerError().body("데이터베이스 오류가 발생했습니다.");
